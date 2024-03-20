@@ -67,7 +67,12 @@ class CLBlastFactory
         $filename = __DIR__ . "/../platforms/ubuntu/lib/librindowclblast.so";
         //self::$ffipf = FFI::load($headerFile);
         $code = file_get_contents($headerFile);
-        $ffi = FFI::cdef($code,$filename);
+        $ffi = null;
+        try {
+            $ffi = FFI::cdef($code,$filename);
+        } catch(FFIException $e) {
+            $ffi = null;
+        }
         self::$ffipf = $ffi;
     }
 
