@@ -1972,6 +1972,174 @@ class BlasTest extends TestCase
         }
     }
 
+    /**
+     * d1,d2,b1,p = rotmg(x,y)   b1: rotated x   p: params  d1,d2:works
+     */
+    public function translate_rotmg(
+        NDArray $X,
+        NDArray $Y,
+        NDArray $D1=null,
+        NDArray $D2=null,
+        NDArray $B1=null,
+        NDArray $B2=null,
+        NDArray $P=null,
+        object $events=null) : array
+    {
+        if($X->size()!=1||$Y->size()!=1) {
+            $shapeError = '('.implode(',',$X->shape()).'),('.implode(',',$Y->shape()).')';
+            throw new InvalidArgumentException("Unmatch shape of dimension: ".$shapeError);
+        }
+        if($D1==null) {
+            $D1 = $this->ones([],dtype:$X->dtype());
+        }
+        if($D2==null) {
+            $D2 = $this->ones([],dtype:$X->dtype());
+        }
+        if($B1==null) {
+            $B1 = $this->alloc([],dtype:$X->dtype());
+        }
+        $B2 = $this->alloc([],dtype:$Y->dtype());
+        if($P==null) {
+            $P = $this->zeros([5],dtype:$X->dtype());
+        }
+        $this->copy($X->reshape([1]),$B1->reshape([1]));
+        $this->copy($X->reshape([1]),$B2->reshape([1]));
+
+        $DD1 = $D1->buffer();
+        $offD1 = $D1->offset();
+        $DD2 = $D2->buffer();
+        $offD2 = $D2->offset();
+        $BB1 = $B1->buffer();
+        $offB1 = $B1->offset();
+        $BB2 = $B2->buffer();
+        $offB2 = $B2->offset();
+        $PP = $P->buffer();
+        $offP = $P->offset();
+        return [
+            $DD1,$offD1,
+            $DD2,$offD2,
+            $BB1,$offB1,
+            $BB2,$offB2,
+            $PP,$offP,
+            $this->queue,$events,
+        ];
+    }
+
+    /**
+     * NOT Implemented in CLBlast library
+     */
+    public function testRotmgNormal()
+    {
+        $this->markTestSkipped('NOT Implemented in CLBlast library.');
+        $blas = $this->getBlas();
+
+        // float32
+        $dtype = NDArray::float32;
+        $inputs = [
+            [1,1],
+            [2,2],
+            [3,3],
+            [4,4],
+            [5,5],
+        ];
+        foreach($inputs as [$xx,$yy]) {
+            $X = $this->array($xx,dtype:$dtype);
+            $Y = $this->array($yy,dtype:$dtype);
+            $D1 = $this->ones([],dtype:$dtype);
+            $D2 = $this->ones([],dtype:$dtype);
+            $B1 = $this->zeros([],dtype:$dtype);
+            $B2 = $this->zeros([],dtype:$dtype);
+            $P = $this->zeros([5],dtype:$dtype);
+            [
+                $DD1,$offD1,
+                $DD2,$offD2,
+                $BB1,$offB1,
+                $BB2,$offB2,
+                $PP,$offP,
+                $queue,$events,
+            ] = $this->translate_rotmg($X,$Y,$D1,$D2,$B1,$B2,$P);
+            $blas->rotmg(
+                $DD1,$offD1,
+                $DD2,$offD2,
+                $BB1,$offB1,
+                $BB2,$offB2,
+                $PP,$offP,
+                $queue,$events,
+            );
+            $events->wait();
+
+            $d1x = $D1->toArray();
+            $d2y = $D2->toArray();
+            $b1  = $B1->toArray();
+            //echo "(x,y)=(".$X->buffer()[0].", ".$Y->buffer()[0].")\n";
+            //echo "(r,z)=(".$rr.", ".$zz.")\n";
+            //echo "(c,s)=(".$cc.", ".$ss.")\n";
+            #echo "(rx,ry)=(".$rx.",".$ry.")\n";
+            $this->assertTrue(true);
+        }
+
+    }
+
+    /**
+    *    x,y := rot(x,y,p)
+    */
+    public function translate_rotm(
+        NDArray $X,
+        NDArray $Y,
+        NDArray $P,
+        object $events=null) : array
+    {
+        if($X->shape()!=$Y->shape()) {
+            $shapeError = '('.implode(',',$X->shape()).'),('.implode(',',$Y->shape()).')';
+            throw new InvalidArgumentException("Unmatch shape of dimension: ".$shapeError);
+        }
+        $N = $X->size();
+        $XX = $X->buffer();
+        $offX = $X->offset();
+        $YY = $Y->buffer();
+        $offY = $Y->offset();
+        $PP = $P->buffer();
+        $offP = $P->offset();
+        return [
+            $N,
+            $XX,$offX,1,
+            $YY,$offY,1,
+            $PP,$offP,
+            $this->queue,$events,
+        ];
+    }
+
+    /**
+     * NOT Implemented in CLBlast library
+     */
+    public function testRotmNormal()
+    {
+        $this->markTestSkipped('NOT Implemented in CLBlast library.');
+        $blas = $this->getBlas();
+
+        // float32
+        $dtype = NDArray::float32;
+        $x = $this->array([1,2,3,4,5],dtype:$dtype);
+        $y = $this->array([1,2,3,4,5],dtype:$dtype);
+        $p = $this->array([-2,0,0,0,0]);
+
+        [
+            $N,
+            $XX,$offX,$incX,
+            $YY,$offY,$incY,
+            $PP,$offP,
+            $queue,$events,
+        ] = $this->translate_rotm($x,$y,$p);
+
+        $blas->rotm(
+            $N,
+            $XX,$offX,$incX,
+            $YY,$offY,$incY,
+            $PP,$offP,
+            $queue,$events,
+        );
+        $this->assertTrue(true);
+    }
 
     //
     //  gemv

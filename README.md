@@ -51,14 +51,25 @@ Ubuntu standard OpenCL drivers include:
 - pocl-opencl-icd
 
 
-Next, download and set up clbast.
+Next, Setup clblast. 
 
-Download and Extract Archive file and Pack to deb
+Install clbast on Ubuntu 22.04 or Debian 12 or later.
+```shell
+$ sudo apt install libclblast1
+```
+
+If you use Ubuntu 20.04 or Debian 11,
+download and Extract Archive file and Pack to deb
 ```shell
 $ cd /some/app/directory
 $ composer require rindow/rindow-clblast-ffi
 $ cp vendor/rindow/rindow-clblast-ffi/clblast-packdeb.sh .
 $ sh ./clblast-packdeb.sh
-$ sudo apt install ./clblast_X.X.X-X+ubuntuXX.XX_amd64.deb
+$ sudo apt install ./clblast_X.X.X_amd64.deb
 ```
 
+And then, Please install rindow-clblast-ffi if you have not already done so.
+```shell
+$ cd /some/app/directory
+$ composer require rindow/rindow-clblast-ffi
+```

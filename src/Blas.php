@@ -597,6 +597,7 @@ class Blas
                 try {
                     $Y->copy($queue,$X,$bytes,$src_offset,$dst_offset,$event);
                 } catch(RuntimeException $e) {
+                    $status = $e->getCode();
                     throw new RuntimeException("CLBlast?copy error=$status", $status, $e);
                 }
                 // skip to move raw event 
@@ -875,6 +876,145 @@ class Blas
                 throw new RuntimeException("CLBlast?rot error=$status: Not Implemented", $status);
             }
             throw new RuntimeException("CLBlast?rot error=$status", $status);
+        }
+        if($event) {
+            $event->_move($event_obj);
+        }
+    }
+
+    public function rotmg(
+        DeviceBuffer $D1, int $offsetD1,
+        DeviceBuffer $D2, int $offsetD2,
+        DeviceBuffer $B1, int $offsetB1,
+        DeviceBuffer $B2, int $offsetB2,
+        DeviceBuffer $P,  int $offsetP,
+        CommandQueue $queue,// Rindow\OpenCL\CommandQueue
+        EventList $event=null,   // Rindow\OpenCL\EventList
+        ) : void
+    {
+        $ffi= $this->ffi;
+
+        //// Check Buffer A
+        //$this->assert_vector_buffer_spec("A", $A, 1, $offsetA, 1);
+        //// Check Buffer B
+        //$this->assert_vector_buffer_spec("B", $B, 1, $offsetB, 1);
+        //// Check Buffer C
+        //$this->assert_vector_buffer_spec("C", $C, 1, $offsetC, 1);
+        //// Check Buffer S
+        //$this->assert_vector_buffer_spec("S", $S, 1, $offsetS, 1);
+
+        // Check Buffer A and B and C and S
+        $dtype = $D1->dtype();
+        if($dtype!=$D2->dtype()||$dtype!=$B1->dtype()
+            ||$dtype!=$B2->dtype()||$dtype!=$P->dtype()) {
+            throw new InvalidArgumentException("Unmatch data type for A,B,C and S");
+        }
+        $bufferD1_p = $ffi->cast("cl_mem",$D1->_getId());
+        $bufferD2_p = $ffi->cast("cl_mem",$D2->_getId());
+        $bufferB1_p = $ffi->cast("cl_mem",$B1->_getId());
+        $bufferB2_p = $ffi->cast("cl_mem",$B2->_getId());
+        $bufferP_p = $ffi->cast("cl_mem",$P->_getId());
+        $queue_p = $ffi->cast("cl_command_queue*",FFI::addr($queue->_getId()));
+        $event_p = null;
+        if($event) {
+            $event_obj = $event->_ffi()->new("cl_event[1]");
+            $event_p = $ffi->cast("cl_event[1]",$event_obj);
+        }
+
+        switch($dtype) {
+            case NDArray::float32:{
+                $status = $ffi->CLBlastSrotmg(
+                    $bufferD1_p,$offsetD1,
+                    $bufferD2_p,$offsetD2,
+                    $bufferB1_p,$offsetB1,
+                    $bufferB2_p,$offsetB2,
+                    $bufferP_p,$offsetP,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            case NDArray::float64:{
+                $status = $ffi->CLBlastDrotmg(
+                    $bufferD1_p,$offsetD1,
+                    $bufferD2_p,$offsetD2,
+                    $bufferB1_p,$offsetB1,
+                    $bufferB2_p,$offsetB2,
+                    $bufferP_p,$offsetP,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            default: {
+                throw new InvalidArgumentException('Unsuppored data type');
+            }
+        }
+        if($status!=self::CLBlastSuccess) {
+            if($status==self::CLBlastNotImplemented) {
+                throw new RuntimeException("CLBlast?rotmg error=$status: Not Implemented", $status);
+            }
+            throw new RuntimeException("CLBlast?rotmg error=$status", $status);
+        }
+        if($event) {
+            $event->_move($event_obj);
+        }
+    }
+
+    public function rotm(
+        int $n,
+        DeviceBuffer $X, int $offsetX, int $incX,
+        DeviceBuffer $Y, int $offsetY, int $incY,
+        DeviceBuffer $P, int $offsetP,
+        CommandQueue $queue,// Rindow\OpenCL\CommandQueue
+        EventList $event=null,   // Rindow\OpenCL\EventList
+        ) : void
+    {
+        $ffi= $this->ffi;
+
+        // Check Buffer A and B and C and S
+        $dtype = $X->dtype();
+        if($dtype!=$Y->dtype()) {
+            throw new InvalidArgumentException("Unmatch data type for X and Y");
+        }
+        $bufferX_p = $ffi->cast("cl_mem",$X->_getId());
+        $bufferY_p = $ffi->cast("cl_mem",$Y->_getId());
+        $bufferP_p = $ffi->cast("cl_mem",$P->_getId());
+        $queue_p = $ffi->cast("cl_command_queue*",FFI::addr($queue->_getId()));
+        $event_p = null;
+        if($event) {
+            $event_obj = $event->_ffi()->new("cl_event[1]");
+            $event_p = $ffi->cast("cl_event[1]",$event_obj);
+        }
+
+        switch($dtype) {
+            case NDArray::float32:{
+                $status = $ffi->CLBlastSrotm(
+                    $n,
+                    $bufferX_p,$offsetX,$incX,
+                    $bufferY_p,$offsetY,$incY,
+                    $bufferP_p,$offsetP,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            case NDArray::float64:{
+                $status = $ffi->CLBlastDrotm(
+                    $n,
+                    $bufferX_p,$offsetX,$incX,
+                    $bufferY_p,$offsetY,$incY,
+                    $bufferP_p,$offsetP,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            default: {
+                throw new InvalidArgumentException('Unsuppored data type');
+            }
+        }
+        if($status!=self::CLBlastSuccess) {
+            if($status==self::CLBlastNotImplemented) {
+                throw new RuntimeException("CLBlast?rotm error=$status: Not Implemented", $status);
+            }
+            throw new RuntimeException("CLBlast?rotm error=$status", $status);
         }
         if($event) {
             $event->_move($event_obj);

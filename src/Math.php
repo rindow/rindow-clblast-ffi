@@ -7,6 +7,7 @@ use Interop\Polite\Math\Matrix\BLAS as BLASIF;
 use InvalidArgumentException;
 use OutOfRangeException;
 use LogicException;
+use RuntimeException;
 use FFI;
 use Rindow\OpenCL\FFI\Buffer as DeviceBuffer;
 use Rindow\OpenCL\FFI\CommandQueue;
@@ -455,7 +456,7 @@ class Math
         DeviceBuffer $X, HostBuffer $offsetsX, int $offsetX, int $incX,
         DeviceBuffer $Y, HostBuffer $offsetsY, int $offsetY, int $incY,
         int $batch_count,
-        CommandQueue $queue, EventList $event
+        CommandQueue $queue, EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
