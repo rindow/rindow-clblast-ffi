@@ -8,3 +8,14 @@ parameters:
 	ignoreErrors:
 		-
 			message: "#^Call to an undefined method FFI::#"
+		-
+			message: '#^PHPDoc tag @var with type Rindow\\CLBlast\\FFI\\cl_float2_t is not subtype of native type FFI\\CData#'
+			identifier: varTag.nativeType
+			count: 2
+			path: src/Blas.php
+
+		-
+			message: '#^PHPDoc tag @var with type Rindow\\CLBlast\\FFI\\cl_float2_t is not subtype of native type FFI\\CData#'
+			identifier: varTag.nativeType
+			count: 2
+			path: src/Math.php

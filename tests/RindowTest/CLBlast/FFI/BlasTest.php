@@ -97,7 +97,7 @@ class BlasTest extends TestCase
     protected function translate_scal(
         float|object $alpha,
         NDArray $X,
-        object $events=null,
+        ?object $events=null,
         ) : array
     {
         $N = $X->size();
@@ -275,8 +275,8 @@ class BlasTest extends TestCase
     protected function translate_axpy(
         NDArray $X,
         NDArray $Y,
-        float|object $alpha=null,
-        object $events=null) : array
+        float|object|null $alpha=null,
+        ?object $events=null) : array
     {
         if($X->shape()!=$Y->shape()) {
             $shapeError = '('.implode(',',$X->shape()).'),('.implode(',',$Y->shape()).')';
@@ -460,8 +460,8 @@ class BlasTest extends TestCase
     protected function translate_dot(
         NDArray $X,
         NDArray $Y,
-        NDArray $output=null,
-        object $events=null) : array
+        ?NDArray $output=null,
+        ?object $events=null) : array
     {
         $R = $output;
         if($X->shape()!=$Y->shape()) {
@@ -699,8 +699,8 @@ class BlasTest extends TestCase
 
     protected function translate_asum(
         NDArray $X,
-        NDArray $output=null,
-        object $events=null) : array
+        ?NDArray $output=null,
+        ?object $events=null) : array
     {
         $R = $output;
         if($R==null) {
@@ -1046,8 +1046,8 @@ class BlasTest extends TestCase
 
     protected function translate_iamin(
         NDArray $X,
-        NDArray $output=null,
-        object $events=null)
+        ?NDArray $output=null,
+        ?object $events=null)
     {
         $R = $output;
         if($R==null) {
@@ -1068,8 +1068,8 @@ class BlasTest extends TestCase
 
     protected function translate_amin(
         NDArray $X,
-        NDArray $output=null,
-        object $events=null)
+        ?NDArray $output=null,
+        ?object $events=null)
     {
         $R = $output;
         if($R==null) {
@@ -1255,8 +1255,8 @@ class BlasTest extends TestCase
 
     protected function translate_copy(
         NDArray $X,
-        NDArray $output=null,
-        object $events=null) : array
+        ?NDArray $output=null,
+        ?object $events=null) : array
     {
         $Y = $output;
         if($Y===null) {
@@ -1811,11 +1811,11 @@ class BlasTest extends TestCase
     public function translate_rotg(
         NDArray $X,
         NDArray $Y,
-        NDArray $R=null,
-        NDArray $Z=null,
-        NDArray $C=null,
-        NDArray $S=null,
-        object $events=null
+        ?NDArray $R=null,
+        ?NDArray $Z=null,
+        ?NDArray $C=null,
+        ?NDArray $S=null,
+        ?object $events=null
         ) : array
     {
         if($X->shape()!=$Y->shape()) {
@@ -1902,7 +1902,7 @@ class BlasTest extends TestCase
         NDArray $Y,
         float $cos,
         float $sin,
-        object $events=null
+        ?object $events=null
         ) : array
     {
         if($X->shape()!=$Y->shape()) {
@@ -1978,12 +1978,12 @@ class BlasTest extends TestCase
     public function translate_rotmg(
         NDArray $X,
         NDArray $Y,
-        NDArray $D1=null,
-        NDArray $D2=null,
-        NDArray $B1=null,
-        NDArray $B2=null,
-        NDArray $P=null,
-        object $events=null) : array
+        ?NDArray $D1=null,
+        ?NDArray $D2=null,
+        ?NDArray $B1=null,
+        ?NDArray $B2=null,
+        ?NDArray $P=null,
+        ?object $events=null) : array
     {
         if($X->size()!=1||$Y->size()!=1) {
             $shapeError = '('.implode(',',$X->shape()).'),('.implode(',',$Y->shape()).')';
@@ -2087,7 +2087,7 @@ class BlasTest extends TestCase
         NDArray $X,
         NDArray $Y,
         NDArray $P,
-        object $events=null) : array
+        ?object $events=null) : array
     {
         if($X->shape()!=$Y->shape()) {
             $shapeError = '('.implode(',',$X->shape()).'),('.implode(',',$Y->shape()).')';
@@ -2148,12 +2148,12 @@ class BlasTest extends TestCase
     protected function translate_gemv(
         NDArray $A,
         NDArray $X,
-        float|object $alpha=null,
-        float|object $beta=null,
-        NDArray $Y=null,
-        bool $trans=null,
-        bool $conj=null,
-        object $events=null
+        float|object|null $alpha=null,
+        float|object|null $beta=null,
+        ?NDArray $Y=null,
+        ?bool $trans=null,
+        ?bool $conj=null,
+        ?object $events=null
         )
     {
         [$trans,$conj] = $this->complementTrans($trans,$conj,$A->dtype());
@@ -2768,14 +2768,14 @@ class BlasTest extends TestCase
     protected function translate_gemm(
         NDArray $A,
         NDArray $B,
-        float|object $alpha=null,
-        float|object $beta=null,
-        NDArray $C=null,
-        bool $transA=null,
-        bool $transB=null,
-        bool $conjA=null,
-        bool $conjB=null,
-        object $events=null
+        float|object|null $alpha=null,
+        float|object|null $beta=null,
+        ?NDArray $C=null,
+        ?bool $transA=null,
+        ?bool $transB=null,
+        ?bool $conjA=null,
+        ?bool $conjB=null,
+        ?object $events=null
         )
     {
         [$transA,$conjA] = $this->complementTrans($transA,$conjA,$A->dtype());
@@ -3376,12 +3376,12 @@ class BlasTest extends TestCase
     public function translate_symm(
         NDArray $A,
         NDArray $B,
-        float|object $alpha=null,
-        float|object $beta=null,
-        NDArray $C=null,
-        bool $right=null,
-        bool $lower=null,
-        object $events=null,
+        float|object|null $alpha=null,
+        float|object|null $beta=null,
+        ?NDArray $C=null,
+        ?bool $right=null,
+        ?bool $lower=null,
+        ?object $events=null,
         ) : array
     {
         if($A->ndim()!=2 || $B->ndim()!=2) {
@@ -3645,13 +3645,13 @@ class BlasTest extends TestCase
 
     public function translate_syrk(
         NDArray $A,
-        float|object $alpha=null,
-        float|object $beta=null,
-        NDArray $C=null,
-        bool $lower=null,
-        bool $trans=null,
-        bool $conj=null,
-        object $events=null,
+        float|object|null $alpha=null,
+        float|object|null $beta=null,
+        ?NDArray $C=null,
+        ?bool $lower=null,
+        ?bool $trans=null,
+        ?bool $conj=null,
+        ?object $events=null,
         ) : array
     {
         $trans = $trans ?? false;
@@ -3921,13 +3921,13 @@ class BlasTest extends TestCase
     public function translate_syr2k(
         NDArray $A,
         NDArray $B,
-        float|object $alpha=null,
-        float|object $beta=null,
-        NDArray $C=null,
-        bool $lower=null,
-        bool $trans=null,
-        bool $conj=null,
-        object $events=null,
+        float|object|null $alpha=null,
+        float|object|null $beta=null,
+        ?NDArray $C=null,
+        ?bool $lower=null,
+        ?bool $trans=null,
+        ?bool $conj=null,
+        ?object $events=null,
         ) : array
     {
         $trans = $trans ?? false;
@@ -4244,13 +4244,13 @@ class BlasTest extends TestCase
     public function translate_trmm(
         NDArray $A,
         NDArray $B,
-        float|object $alpha=null,
-        bool $right=null,
-        bool $lower=null,
-        bool $trans=null,
-        bool $conj=null,
-        bool $unit=null,
-        object $events=null,
+        float|object|null $alpha=null,
+        ?bool $right=null,
+        ?bool $lower=null,
+        ?bool $trans=null,
+        ?bool $conj=null,
+        ?bool $unit=null,
+        ?object $events=null,
         ) : array
     {
         [$trans,$conj] = $this->complementTrans($trans,$conj,$A->dtype());
@@ -4509,13 +4509,13 @@ class BlasTest extends TestCase
     public function translate_trsm(
         NDArray $A,
         NDArray $B,
-        float|object $alpha=null,
-        bool $right=null,
-        bool $lower=null,
-        bool $trans=null,
-        bool $conj=null,
-        bool $unit=null,
-        object $events=null,
+        float|object|null $alpha=null,
+        ?bool $right=null,
+        ?bool $lower=null,
+        ?bool $trans=null,
+        ?bool $conj=null,
+        ?bool $unit=null,
+        ?object $events=null,
         ) : array
     {
         [$trans,$conj] = $this->complementTrans($trans,$conj,$A->dtype());
@@ -4802,11 +4802,11 @@ class BlasTest extends TestCase
 
     public function translate_omatcopy(
         NDArray $A,
-        bool $trans=null,
-        float|object $alpha=null,
-        NDArray $B=null,
-        bool $conj=null,
-        object $events=null,
+        ?bool $trans=null,
+        float|object|null $alpha=null,
+        ?NDArray $B=null,
+        ?bool $conj=null,
+        ?object $events=null,
         ) : array
     {
         [$trans,$conj] = $this->complementTrans($trans,$conj,$A->dtype());

@@ -34,7 +34,7 @@ class Blas
         float|object $alpha,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -99,7 +99,7 @@ class Blas
         DeviceBuffer $X, int $offsetX, int $incX,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -170,7 +170,7 @@ class Blas
         DeviceBuffer $X, int $offsetX, int $incX,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -228,7 +228,7 @@ class Blas
         DeviceBuffer $X, int $offsetX, int $incX,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -286,7 +286,7 @@ class Blas
         DeviceBuffer $X, int $offsetX, int $incX,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -343,7 +343,7 @@ class Blas
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -410,7 +410,7 @@ class Blas
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -473,7 +473,7 @@ class Blas
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -536,7 +536,7 @@ class Blas
         DeviceBuffer $X, int $offsetX, int $incX,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -617,7 +617,7 @@ class Blas
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -684,7 +684,7 @@ class Blas
         DeviceBuffer $X, int $offsetX, int $incX,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi = $this->ffi;
@@ -752,7 +752,7 @@ class Blas
         DeviceBuffer $C, int $offsetC,
         DeviceBuffer $S, int $offsetS,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi= $this->ffi;
@@ -825,7 +825,7 @@ class Blas
         float $cos,
         float $sin,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi= $this->ffi;
@@ -889,7 +889,7 @@ class Blas
         DeviceBuffer $B2, int $offsetB2,
         DeviceBuffer $P,  int $offsetP,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi= $this->ffi;
@@ -965,7 +965,7 @@ class Blas
         DeviceBuffer $Y, int $offsetY, int $incY,
         DeviceBuffer $P, int $offsetP,
         CommandQueue $queue,// Rindow\OpenCL\CommandQueue
-        EventList $event=null,   // Rindow\OpenCL\EventList
+        ?EventList $event=null,   // Rindow\OpenCL\EventList
         ) : void
     {
         $ffi= $this->ffi;
@@ -1032,7 +1032,7 @@ class Blas
         float|object $beta,
         DeviceBuffer $Y, int $offsetY, int $incY,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -1144,7 +1144,7 @@ class Blas
         float|object $beta,
         DeviceBuffer $C, int $offsetC, int $ldC,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -1262,7 +1262,7 @@ class Blas
         float|object $beta,
         DeviceBuffer $C, int $offsetC, int $ldC,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;
@@ -1372,7 +1372,7 @@ class Blas
         float|object $beta,
         DeviceBuffer $C, int $offsetC, int $ldC,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;
@@ -1475,7 +1475,7 @@ class Blas
         float|object $beta,
         DeviceBuffer $C, int $offsetC, int $ldC,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;
@@ -1586,7 +1586,7 @@ class Blas
         DeviceBuffer $A, int $offsetA, int $ldA,
         DeviceBuffer $B, int $offsetB, int $ldB,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;
@@ -1691,7 +1691,7 @@ class Blas
         DeviceBuffer $A, int $offsetA, int $ldA,
         DeviceBuffer $B, int $offsetB, int $ldB,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;
@@ -1793,7 +1793,7 @@ class Blas
         DeviceBuffer $A, int $offsetA, int $ldA,
         DeviceBuffer $B, int $offsetB, int $ldB,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;

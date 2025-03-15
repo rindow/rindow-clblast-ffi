@@ -19,8 +19,8 @@ class CLBlastFactory
      * @param array<string> $libFiles
      */
     public function __construct(
-        string $headerFile=null,
-        array $libFiles=null,
+        ?string $headerFile=null,
+        ?array $libFiles=null,
         )
     {
         if(self::$ffi!==null) {
@@ -92,7 +92,7 @@ class CLBlastFactory
         //return $pathname!==null;
     }
 
-    public function Blas(object $queue=null,object $service=null) : object
+    public function Blas(?object $queue=null,?object $service=null) : object
     {
         if(self::$ffi==null) {
             throw new RuntimeException('clblast library not loaded.');
@@ -104,7 +104,7 @@ class CLBlastFactory
         return new Blas(self::$ffi, $alt);
     }
 
-    public function Math(object $queue=null,object $service=null) : object
+    public function Math(?object $queue=null,?object $service=null) : object
     {
         if(self::$ffi==null) {
             throw new RuntimeException('clblast library not loaded.');

@@ -1410,12 +1410,12 @@ class MathTest extends TestCase
         NDArray $B,
         float|object $alpha,
         float|object $beta,
-        NDArray $C=null,
-        bool $transA=null,
-        bool $transB=null,
-        bool $conjA=null,
-        bool $conjB=null,
-        object $events=null
+        ?NDArray $C=null,
+        ?bool $transA=null,
+        ?bool $transB=null,
+        ?bool $conjA=null,
+        ?bool $conjB=null,
+        ?object $events=null
         )
     {
         [$transA,$conjA] = $this->complementTrans($transA,$conjA,$A->dtype());

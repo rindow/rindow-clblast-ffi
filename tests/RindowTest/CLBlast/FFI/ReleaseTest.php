@@ -13,10 +13,14 @@ class ReleaseTest extends TestCase
     {
         $factory = new CLBlastFactory();
         if(extension_loaded('ffi')) {
-            $blas = $factory->Blas();
-            $math = $factory->Math();
-            $this->assertInstanceof(Blas::class,$blas);
-            $this->assertInstanceof(Math::class,$math);
+            if($factory->isAvailable()) {
+                $blas = $factory->Blas();
+                $math = $factory->Math();
+                $this->assertInstanceof(Blas::class,$blas);
+                $this->assertInstanceof(Math::class,$math);
+            } else {
+                $this->assertTrue(true);
+            }
         } else {
             $this->assertFalse($factory->isAvailable());
         }

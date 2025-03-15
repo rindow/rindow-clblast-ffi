@@ -36,7 +36,7 @@ class Math
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -89,7 +89,7 @@ class Math
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -136,7 +136,7 @@ class Math
         DeviceBuffer $R, int $offsetR,
         DeviceBuffer $X, int $offsetX, int $incX,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -186,7 +186,7 @@ class Math
         float $beta,
         DeviceBuffer $Z, int $offsetZ, int $incZ,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -247,7 +247,7 @@ class Math
         DeviceBuffer $im_buffer, int $im_offset,
         DeviceBuffer $col_buffer, int $col_offset,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -316,7 +316,7 @@ class Math
         DeviceBuffer $col_buffer, int $col_offset,
         DeviceBuffer $im_buffer, int $im_offset,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -387,7 +387,7 @@ class Math
         DeviceBuffer $kernel_buffer, int $kernel_offset,
         DeviceBuffer $result_buffer, int $result_offset,
         CommandQueue $queue,
-        EventList $event=null
+        ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -456,7 +456,7 @@ class Math
         DeviceBuffer $X, HostBuffer $offsetsX, int $offsetX, int $incX,
         DeviceBuffer $Y, HostBuffer $offsetsY, int $offsetY, int $incY,
         int $batch_count,
-        CommandQueue $queue, EventList $event=null
+        CommandQueue $queue, ?EventList $event=null
     ) : void
     {
         $ffi = $this->ffi;
@@ -551,7 +551,7 @@ class Math
         DeviceBuffer $C, HostBuffer $offsetsC, int $offsetC, int $ldC,
         int $batch_count,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;
@@ -682,7 +682,7 @@ class Math
         DeviceBuffer $C, int $offsetC, int $ldC, int $strideC,
         int $batch_count,
         CommandQueue $queue,
-        EventList $event=null,
+        ?EventList $event=null,
     ) : void
     {
         $ffi = $this->ffi;

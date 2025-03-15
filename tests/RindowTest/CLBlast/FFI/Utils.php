@@ -16,8 +16,8 @@ use Rindow\OpenCL\FFI\OpenCLFactory;
 use Rindow\OpenCL\FFI\EventList;
 
 function C(
-    float $r=null,
-    float $i=null,
+    ?float $r=null,
+    ?float $i=null,
 ) : object
 {
     $r = $r ?? 0.0;
@@ -76,7 +76,7 @@ trait Utils
     //    return $this->openCLFactory;
     //}
 
-    public function hostArray(mixed $array=null, int $dtype=null, array $shape=null) : object
+    public function hostArray(mixed $array=null, ?int $dtype=null, ?array $shape=null) : object
     {
         $ndarray = new class ($array, $dtype, $shape, service:$this) implements NDArray {
             protected object $buffer;
@@ -86,7 +86,7 @@ trait Utils
             protected array $shape;
             protected object $service;
             public function __construct(
-                mixed $array=null, int $dtype=null, array $shape=null, object $service=null,
+                mixed $array=null, ?int $dtype=null, ?array $shape=null, ?object $service=null,
             ) {
                 $this->service = $service;
                 $dtype = $dtype ?? NDArray::float32;
@@ -266,25 +266,25 @@ trait Utils
         return $ndarray;
     }
 
-    public function alloc(array $shape,int $dtype=null, int $flags=null)
+    public function alloc(array $shape,?int $dtype=null, ?int $flags=null)
     {
         $ndarray = $this->hostArray(null,dtype:$dtype,shape:$shape);
         return $this->array($ndarray, dtype:$dtype, flags:$flags);
     }
 
-    public function zeros(array $shape,int $dtype=null, int $flags=null)
+    public function zeros(array $shape,?int $dtype=null, ?int $flags=null)
     {
         $ndarray = $this->hostArray(null,dtype:$dtype,shape:$shape);
         return $this->array($ndarray, dtype:$dtype, flags:$flags);
     }
 
-    public function zerosLike(NDArray $x,int $dtype=null, int $flags=null)
+    public function zerosLike(NDArray $x,?int $dtype=null, ?int $flags=null)
     {
         // argument $dtype is dummy
         return $this->zeros($x->shape(),dtype:$x->dtype(), flags:$flags);
     }
 
-    public function ones(array $shape, int $dtype=null, int $flags=null)
+    public function ones(array $shape, ?int $dtype=null, ?int $flags=null)
     {
         $ndarray = $this->hostArray(null,dtype:$dtype,shape:$shape);
         $buffer = $ndarray->buffer();
@@ -300,7 +300,7 @@ trait Utils
         return $this->array($ndarray, dtype:$dtype, flags:$flags);
     }
 
-    public function full(array $shape, mixed $value ,int $dtype=null, int $flags=null)
+    public function full(array $shape, mixed $value ,?int $dtype=null, ?int $flags=null)
     {
         $ndarray = $this->hostArray(null,dtype:$dtype,shape:$shape);
         $buffer = $ndarray->buffer();
@@ -369,7 +369,7 @@ trait Utils
         return $abs;
     }
 
-    protected function copy(NDArray $x,NDArray $y=null) : NDArray
+    protected function copy(NDArray $x,?NDArray $y=null) : NDArray
     {
         $blas = $this->getBlas();
 
@@ -382,7 +382,7 @@ trait Utils
         return $y;
     }
 
-    protected function isclose(NDArray $a, NDArray $b, $rtol=null, $atol=null) : bool
+    protected function isclose(NDArray $a, NDArray $b, ?float $rtol=null, ?float $atol=null) : bool
     {
         $blas = $this->getBlas();
 
@@ -415,9 +415,9 @@ trait Utils
     }
 
     public function NDArrayCL(
-        object $queue, mixed $buffer=null, int $dtype=null, array $shape = null,
-        int $offset=null, int $flags=null,
-        object $service=null        
+        object $queue, mixed $buffer=null, ?int $dtype=null, ?array $shape = null,
+        ?int $offset=null, ?int $flags=null,
+        ?object $service=null        
     ) : NDArray
     {
         $arrayCL = new class (
@@ -454,9 +454,9 @@ trait Utils
             protected object $context;
             protected object $queue;
             public function __construct(
-                object $queue, mixed $buffer=null, int $dtype=null, array $shape = null,
-                int $offset=null, int $flags=null,
-                object $service=null)
+                object $queue, mixed $buffer=null, ?int $dtype=null, ?array $shape = null,
+                ?int $offset=null, ?int $flags=null,
+                ?object $service=null)
             {
                 if($service===null) {
                     throw new InvalidArgumentException("No service specified.");
@@ -520,7 +520,7 @@ trait Utils
         
             protected function newBuffer(
                 object $context, int $size, int $dtype, int $flags=0,
-                object $hostBuffer=null, int $hostOffset=0)
+                ?object $hostBuffer=null, int $hostOffset=0)
             {
                 //if(!extension_loaded('rindow_opencl')) {
                 //    throw new LogicException("rindow_opencl extension is not loaded.");
@@ -606,8 +606,8 @@ trait Utils
             }
         
             public function toNDArray(
-                bool $blocking_read=null,EventList $waitEvents=null,
-                EventList &$events=null) : NDArray
+                ?bool $blocking_read=null,?EventList $waitEvents=null,
+                ?EventList &$events=null) : NDArray
             {
                 $blocking_read = $blocking_read ?? true;
                 $array = $this->service->hostArray(null,dtype:$this->dtype,shape:$this->shape);
@@ -637,7 +637,7 @@ trait Utils
         return $arrayCL;
     }
 
-    public function array(mixed $array, int $dtype=null, int $flags=null) : NDArray
+    public function array(mixed $array, ?int $dtype=null, ?int $flags=null) : NDArray
     {
         if($array instanceof NDArray) {
             $buffer = $array->buffer();
