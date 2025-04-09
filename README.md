@@ -13,8 +13,9 @@ Please see the documents about Buffer objects on [Rindow Mathematics](https://ri
 Requirements
 ============
 
-- PHP 8.1 or PHP8.2 or PHP8.3 or PHP8.4
+- PHP 8.1, PHP8.2, PHP8.3, PHP8.4
 - CLBlast 1.5.1 or later
+- Windows 10/11, Ubuntu(Recommends 2204-), Debian(Recommends 12-), or later
 
 How to setup OpenCL & CLBlast
 =============================

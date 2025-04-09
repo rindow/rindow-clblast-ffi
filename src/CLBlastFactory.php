@@ -14,6 +14,11 @@ class CLBlastFactory
     protected array $libs_win = ['clblast.dll'];
     /** @var array<string> $libs_linux */
     protected array $libs_linux = ['libclblast.so.1'];
+    /** @var array<string> $libs_mac */
+    protected array $libs_mac = [
+        '/opt/homebrew/lib/libclblast.dylib',
+        '/usr/local/lib/libclblast.dylib'
+    ];
 
     /**
      * @param array<string> $libFiles
@@ -36,6 +41,8 @@ class CLBlastFactory
                 $libFiles = $this->libs_linux;
             } elseif(PHP_OS=='WINNT') {
                 $libFiles = $this->libs_win;
+            } elseif(PHP_OS=='Darwin') {
+                $libFiles = $this->libs_mac;
             } else {
                 throw new RuntimeException('Unknown operating system: "'.PHP_OS.'"');
             }
