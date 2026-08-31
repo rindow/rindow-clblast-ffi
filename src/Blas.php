@@ -1131,6 +1131,96 @@ class Blas
         }
     }
 
+    public function trsv(
+        int $order,
+        int $uplo,
+        int $trans,
+        int $diag,
+        int $n,
+        DeviceBuffer $A, int $offsetA, int $ldA,
+        DeviceBuffer $X, int $offsetX, int $incX,
+        CommandQueue $queue,
+        ?EventList $event=null
+    ) : void
+    {
+        $ffi = $this->ffi;
+        $alt = $this->alt;
+
+        // Check transA code
+        if($trans!==BLASIF::NoTrans && $trans!==BLASIF::ConjNoTrans &&
+            $trans!==BLASIF::Trans && $trans!==BLASIF::ConjTrans) {
+            throw new InvalidArgumentException("unknown transpose mode for bufferA: $trans");
+        }
+        // Check Buffer A and X and Y
+        if($A->dtype()!=$X->dtype()) {
+            throw new InvalidArgumentException("Unmatch data type for A and X");
+        }
+        // CLBlast does not support ConjNoTrans
+        if($trans==BLASIF::ConjNoTrans) {
+            throw new InvalidArgumentException("CLBlast does not support ConjNoTrans");
+        }
+        $bufferA_p = $ffi->cast("cl_mem",$A->_getId());
+        $bufferX_p = $ffi->cast("cl_mem",$X->_getId());
+        $queue_p = $ffi->cast("cl_command_queue*",FFI::addr($queue->_getId()));
+        $event_p = null;
+        if($event) {
+            $event_obj = $event->_ffi()->new("cl_event[1]");
+            $event_p = $ffi->cast("cl_event[1]",$event_obj);
+        }
+
+        switch($X->dtype()) {
+            case NDArray::float32:{
+                $status = $ffi->CLBlastStrsv(
+                    $order, $uplo, $trans, $diag,
+                    $n,
+                    $bufferA_p,$offsetA,$ldA,
+                    $bufferX_p,$offsetX,$incX,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            case NDArray::float64:{
+                $status = $ffi->CLBlastDtrsv(
+                    $order, $uplo, $trans, $diag,
+                    $n,
+                    $bufferA_p,$offsetA,$ldA,
+                    $bufferX_p,$offsetX,$incX,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            case NDArray::complex64:{
+                $status = $alt->CLBlastCtrsv(
+                    $order, $uplo, $trans, $diag,
+                    $n,
+                    $bufferA_p,$offsetA,$ldA,
+                    $bufferX_p,$offsetX,$incX,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            case NDArray::complex128:{
+                $status = $alt->CLBlastZtrsv(
+                    $order, $uplo, $trans, $diag,
+                    $n,
+                    $bufferA_p,$offsetA,$ldA,
+                    $bufferX_p,$offsetX,$incX,
+                    $queue_p,$event_p
+                );
+                break;
+            }
+            default: {
+                throw new InvalidArgumentException('Unsuppored data type');
+            }
+        }
+        if($status!=self::CLBlastSuccess) {
+            throw new RuntimeException("CLBlast?copy error=$status", $status);
+        }
+        if($event) {
+            $event->_move($event_obj);
+        }
+    }
+
     public function gemm(
         int $order,
         int $transA,

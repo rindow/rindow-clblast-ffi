@@ -382,7 +382,11 @@ trait Utils
         return $y;
     }
 
-    protected function isclose(NDArray $a, NDArray $b, ?float $rtol=null, ?float $atol=null) : bool
+    protected function isclose(
+        NDArray $a, NDArray $b, 
+        float|object|null $rtol=null, ?float $atol=null,
+        ?bool $debug=null,
+        ) : bool
     {
         $blas = $this->getBlas();
 
@@ -393,23 +397,52 @@ trait Utils
         if($atol===null) {
             $atol = 1e-07;
         }
+        if($isCpx && is_numeric($rtol)) {
+            $rtol = C($rtol);
+        }
         if($a->shape()!=$b->shape()) {
             return false;
         }
+        $eformat = $isCpx?'(%10.6e,%10.6ei)':'%14.8e';
         // diff = b - a
         $alpha =  $isCpx?C(-1):-1;
         $diffs = $this->copy($b);
+        $this->queue->finish();
         $blas->axpy(...$this->translate_axpy($a,$diffs,$alpha));
+        $this->queue->finish();
         $iDiffMax = $this->zeros([],dtype:NDArray::int32);
+        $this->queue->finish();
         $blas->iamax(...$this->translate_amin($diffs,output:$iDiffMax));
-        $diff = $this->abs($diffs->toNDArray()->buffer()[$iDiffMax->toArray()]);
+        $this->queue->finish();
+        $diffsNDArray = $diffs->toNDArray();
+        $this->queue->finish();
+        if($debug) {
+            echo "diffs=".$this->arrayToString($diffsNDArray,format:$eformat,indent:true)."\n";
+            echo "iDiffMax=".$iDiffMax->toArray()."\n";
+        }
+        $diff = $this->abs($diffsNDArray->buffer()[$iDiffMax->toArray()]);
+        $this->queue->finish();
 
         // close = atol + rtol * b
         $scalB = $this->copy($b);
+        $this->queue->finish();
         $blas->scal(...$this->translate_scal($rtol,$scalB));
+        $this->queue->finish();
         $iCloseMax = $this->zeros([],dtype:NDArray::int32);
+        $this->queue->finish();
         $blas->iamax(...$this->translate_amin($scalB,output:$iCloseMax));
-        $close = $atol+$this->abs($scalB->toNDArray()->buffer()[$iCloseMax->toArray()]);
+        $this->queue->finish();
+        $scalBNDArray = $scalB->toNDArray();
+        $this->queue->finish();
+        #if($debug) {
+        #    echo "scaldiffs=".$this->arrayToString($scalBNDArray,format:$eformat,indent:true)."\n";
+        #    echo "iDiffMax=".$iCloseMax->toArray()."\n";
+        #}
+        $close = $atol+$this->abs($scalBNDArray->buffer()[$iCloseMax->toArray()]);
+        $this->queue->finish();
+        if($debug) {
+            echo "diff=".sprintf('%14.8e',$diff).", close=".sprintf('%14.8e',$close)."\n";
+        }
 
         return $diff < $close;
     }
@@ -665,4 +698,76 @@ trait Utils
         );
         return $arrayCL;
     }
+
+    public function arrayToString(
+        NDArray $array,
+        ?string $format=null,
+        bool|int|null $indent=null) : string
+    {
+        $shape = $array->shape();
+        if(count($shape)==0) {
+            $value = $array->toArray();
+            if($format) {
+                if($array->dtype()==NDArray::complex64||$array->dtype()==NDArray::complex128) {
+                    return sprintf($format,$value->real,$value->imag);
+                } else {
+                    return sprintf($format,$value);
+                }
+            } else {
+                return strval($value);
+            }
+        }
+        $n = array_shift($shape);
+        if(!is_numeric($indent) && $indent===true) {
+            $indent=1;
+        }
+        if(count($shape)==0) {
+            if($array->dtype()==NDArray::bool) {
+                $str = '';
+                foreach($array->toArray() as $value) {
+                    $str .= ($str==='') ? '[' : ',';
+                    $str .= $value ? 'true' : 'false';
+                }
+                $str .= ']';
+                return $str;
+            } else {
+                if($format) {
+                    return '['.implode(',',array_map(function($x) use ($format,$array) {
+                            if($array->dtype()==NDArray::complex64||$array->dtype()==NDArray::complex128) {
+                                return sprintf($format,$x->real,$x->imag);
+                            } else {
+                                return sprintf($format,$x);
+                            }
+                        },$array->toArray())).']';
+                } else {
+                    return '['.implode(',',$array->toArray()).']';
+                }
+            }
+        }
+        $string = '[';
+        if($indent) {
+            $string .= "\n";
+        }
+        for($i=0;$i<$n;$i++) {
+            if($i!=0) {
+                $string .= ',';
+                if($indent) {
+                    $string .= "\n";
+                }
+            }
+            if($indent) {
+                $string .= str_repeat(' ',$indent);
+                $string .= $this->arrayToString($array[$i],$format,$indent+1);
+            } else {
+                $string .= $this->arrayToString($array[$i],$format,$indent);
+            }
+        }
+        if($indent) {
+            $string .= "\n";
+            $string .= str_repeat(' ',$indent-1);
+        }
+        $string .= ']';
+        return $string;
+    }
+
 }
